@@ -1,3 +1,3 @@
 # CasinoBot
 
-Vanya B
+Vanya B VLAD S
