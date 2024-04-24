@@ -8,7 +8,7 @@ from cachetools import TTLCache
 class ThrottlingMiddleware(BaseMiddleware):
     def __init__(self, throttle_time_spin: int, throttle_time_other: int):
         self.caches = {
-            "spin": TTLCache(maxsize=10_000, ttl=throttle_time_spin),
+            "game": TTLCache(maxsize=10_000, ttl=throttle_time_spin),
             "default": TTLCache(maxsize=10_000, ttl=throttle_time_other)
         }
 
