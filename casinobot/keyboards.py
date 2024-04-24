@@ -14,7 +14,11 @@ def get_games_keyboard(l10n: FluentLocalization):
         KeyboardButton(text=l10n.format_value("change-bet-text"))
     ]
 
-    return ReplyKeyboardMarkup(keyboard=[first_row, second_row], resize_keyboard=True)
+    third_row = [
+        KeyboardButton(text=l10n.format_value("balance-info-button"))
+    ]
+
+    return ReplyKeyboardMarkup(keyboard=[first_row, second_row, third_row], resize_keyboard=True)
 
 @cache
 def get_main_menu(l10n: FluentLocalization):
@@ -23,3 +27,14 @@ def get_main_menu(l10n: FluentLocalization):
     ]
 
     return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
+
+def get_return_menu(l10n: FluentLocalization):
+    first_row = [
+        KeyboardButton(text=l10n.format_value("repeat-game-button-text"))
+    ]
+
+    second_row = [
+        KeyboardButton(text=l10n.format_value("back-button-text"))
+    ]
+
+    return ReplyKeyboardMarkup(keyboard=[first_row, second_row], resize_keyboard=True)
