@@ -2,12 +2,6 @@ from pathlib import Path
 from fluent.runtime import FluentLocalization, FluentResourceLoader
 
 def get_fluent_localization(language: str) -> FluentLocalization:
-    """
-       Загружает FTL-файлы для выбранного языка
-       :param language: передается локализация из файла конфигурации
-       :return: FluentLocalization объект с загруженными FTL файлами для выбранного языка
-    """
-
     locales_dir = Path(__file__).parent.joinpath("Locales")
     if not locales_dir.exists():
         err = '"Locales" does not exist'
