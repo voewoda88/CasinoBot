@@ -7,7 +7,7 @@ from fluent.runtime import FluentLocalization
 
 from config_reader import Settings
 from keyboards import get_main_menu, get_games_keyboard
-from Filters.filters import GamesFilter, BetFilter
+from Filters.filters import GamesFilter, BetFilter, CheckBalanceFilter
 
 flags = {"throttling_key": "default"}
 router = Router()
@@ -70,3 +70,11 @@ async def process_bet(message: Message, l10n: FluentLocalization, state: FSMCont
     await state.set_state(old_state)
     if flag:
         await state.update_data(bet=int(response))
+
+@router.message(Command("check_balance"), flags=flags)
+@router.message(CheckBalanceFilter(), flags=flags)
+async def check_balance(message: Message, l10n: FluentLocalization, state: FSMContext):
+    user_data = await state.get_data()
+    user_score = user_data.get("score")
+
+    await message.answer(l10n.format_value("balance-info-text", {"points": user_score}), reply_markup=get_games_keyboard(l10n))
