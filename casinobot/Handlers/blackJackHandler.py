@@ -17,7 +17,7 @@ from casinobot.keyboards import get_options_menu, get_games_keyboard, get_return
 from casinobot.Filters.filters import BlackJackTextFilter, BlackJackHitFilter, RepeatCardFilter, BackFilter, BlackJackStandFilter
 from casinobot.config_reader import Settings
 
-flags = {"throttling_key": "game"}
+flags = {"throttling_key": "default"}
 router = Router()
 
 @router.message(RepeatCardFilter(), flags=flags)
@@ -75,26 +75,44 @@ async def black_jack(message: Message, state: FSMContext, l10n: FluentLocalizati
                     }
     ), reply_markup=get_options_menu(l10n))
 
-    await state.update_data(player_hand=player_hand, dealer_hand=dealer_hand, deck=deck)
+    await state.update_data(player_hand=player_hand, dealer_hand=dealer_hand, deck=deck, dealer_score=dealer_score)
 
 @router.message(BlackJackHitFilter(), flags=flags)
 async def hit(message: Message, state: FSMContext, l10n: FluentLocalization):
     user_data = await state.get_data()
     player_hand = user_data["player_hand"]
     deck = user_data["deck"]
+    dealer_hand = user_data["dealer_hand"]
+    dealer_score = user_data["dealer_score"]
+    score = user_data["score"]
+    bet = user_data["bet"]
 
     player_hand.append(deck.deal())
     player_score = calculate_score(player_hand)
-    if player_score > 21:
-        await message.answer(l10n.format_value("busted-text"), reply_markup=get_return_card_menu(l10n))
     await message.answer(l10n.format_value(
-                    "card-player-text",
-                    {
-                        "score": player_score,
-                        "cards": get_card_text(player_hand)
-                    }
+        "card-player-text",
+         {
+              "score": player_score,
+              "cards": get_card_text(player_hand)
+               }
     ))
-    await state.update_data(player_hand=player_hand)
+    if player_score > 21:
+        score = score - bet
+        await message.answer(l10n.format_value(
+            "card-dialer-text",
+            {
+                "score": dealer_score,
+                "cards": get_card_text(dealer_hand)
+            }
+        ))
+        await message.answer(l10n.format_value(
+            "card-game-score-text",
+            {
+                "score": score
+            }
+        ))
+        await message.answer(l10n.format_value("busted-text"), reply_markup=get_return_card_menu(l10n))
+    await state.update_data(player_hand=player_hand, score=score)
 
 @router.message(BlackJackStandFilter(), flags=flags)
 async def stand(message: Message, state:FSMContext, l10n:FluentLocalization):
@@ -102,6 +120,8 @@ async def stand(message: Message, state:FSMContext, l10n:FluentLocalization):
     dealer_hand = user_data["dealer_hand"]
     player_hand = user_data["player_hand"]
     deck = user_data["deck"]
+    score = user_data["score"]
+    bet = user_data["bet"]
 
     dealer_score = calculate_score(dealer_hand)
     while dealer_score < 17:
@@ -113,13 +133,18 @@ async def stand(message: Message, state:FSMContext, l10n:FluentLocalization):
 
     if dealer_score > 21:
         result_text = l10n.format_value("dealer-busted-text")
+        bet = bet * 2
+        score = score + bet
     elif player_score > dealer_score:
         result_text = l10n.format_value("player-win-text")
+        bet = bet * 2
+        score = score + bet
     elif player_score < dealer_score:
         result_text = l10n.format_value("dealer-win-text")
+        score = score - bet
     else:
         result_text = l10n.format_value("draw-text")
-
+    await state.update_data(score=score)
     await message.answer(l10n.format_value(
         "card-dialer-text",
         {
@@ -137,6 +162,12 @@ async def stand(message: Message, state:FSMContext, l10n:FluentLocalization):
     ))
 
     await message.answer(l10n.format_value(result_text), reply_markup=get_return_card_menu(l10n))
+    await message.answer(l10n.format_value(
+        "card-game-score-text",
+        {
+            "score": score
+        }
+    ))
 
 
 def calculate_score(hand):
