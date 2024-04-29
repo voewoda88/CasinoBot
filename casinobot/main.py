@@ -7,7 +7,7 @@ from config_reader import Settings
 from fluent_loader import get_fluent_localization
 from ui_commands import set_bot_commands
 from Middlewares.throttling import ThrottlingMiddleware
-from Handlers import userHandlers, spinHandler
+from Handlers import userHandlers, spinHandler, blackJackHandler
 
 async def main():
     logging.basicConfig(level=logging.INFO)
@@ -25,6 +25,7 @@ async def main():
 
     dp.include_router(userHandlers.router)
     dp.include_router(spinHandler.router)
+    dp.include_router(blackJackHandler.router)
 
     dp.message.middleware(ThrottlingMiddleware(config.throttle_time_spin, config.throttle_time_other))
 
