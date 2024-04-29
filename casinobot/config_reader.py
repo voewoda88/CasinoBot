@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     bot_token: SecretStr
     fsm_mode: str
     bot_language: str
-    starting_points: int = 50
+    starting_points: float = 50
     starting_bet: int = 1
     send_gameover_sticker: bool = False
     throttle_time_spin: int = 2
