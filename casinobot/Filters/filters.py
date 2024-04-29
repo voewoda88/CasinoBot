@@ -22,10 +22,23 @@ class BackFilter(BaseFilter):
     async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
         return message.text == l10n.format_value("back-button-text")
 
+class RepeatCardFilter(BaseFilter):
+    async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
+        return message.text == l10n.format_value("repeat-card-game-button-text")
+
 class CheckBalanceFilter(BaseFilter):
     async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
         return message.text == l10n.format_value("balance-info-button")
 
 class BlackJackTextFilter(BaseFilter):
     async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
-        return message.text == l10n.format_value("blackjack-text")
+        return message.text == l10n.format_value("black-jack-text")
+
+class BlackJackHitFilter(BaseFilter):
+    async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
+        return message.text == l10n.format_value("get-another-card-text")
+
+class BlackJackStandFilter(BaseFilter):
+    async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
+        return message.text == l10n.format_value("enough-card-text")
+
