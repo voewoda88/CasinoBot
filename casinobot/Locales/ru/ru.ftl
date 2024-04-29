@@ -58,12 +58,26 @@ after-spin =
 
 start-card-game-text = Игра начинается.🎲
 
-card-dialer-text = Счёт:{ $score }
-                   Карты дилера :{ $cards }
-card-dialer-hidden-text = Карты дилера :{ $cards }
+card-dialer-text =
+    Карты дилера :
 
-card-player-text = Счёт: { $score }
-                   Ваши карты :{ $cards }
+    { $cards }
+
+    Счёт:{ $score }
+
+card-dialer-hidden-text =
+    Карты дилера :
+
+    { $cards }
+
+card-player-text =
+    Ваши карты :
+
+    { $cards }
+
+    Счёт: { $score }
+
+card-game-score-text = Ваш баланс: { $score}
 
 bet-is-greater-than-balance = Ставка должна быть меньше, чем текущий баланс.
 
