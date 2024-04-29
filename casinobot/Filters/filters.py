@@ -25,6 +25,9 @@ class BackFilter(BaseFilter):
 class RepeatCardFilter(BaseFilter):
     async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
         return message.text == l10n.format_value("repeat-card-game-button-text")
+class RepeatRaketkaFilter(BaseFilter):
+    async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
+        return message.text == l10n.format_value("repeat-raketka-game-button-text")
 
 class CheckBalanceFilter(BaseFilter):
     async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
@@ -42,3 +45,6 @@ class BlackJackStandFilter(BaseFilter):
     async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
         return message.text == l10n.format_value("enough-card-text")
 
+class RacketkaTextFilter(BaseFilter):
+    async def __call__(self, message: Message, l10n: FluentLocalization) -> bool:
+        return message.text == l10n.format_value("raketka-button-text")
