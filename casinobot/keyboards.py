@@ -38,3 +38,25 @@ def get_return_menu(l10n: FluentLocalization):
     ]
 
     return ReplyKeyboardMarkup(keyboard=[first_row, second_row], resize_keyboard=True)
+
+def get_return_card_menu(l10n: FluentLocalization):
+    first_row = [
+        KeyboardButton(text=l10n.format_value("repeat-card-game-button-text"))
+    ]
+
+    second_row = [
+        KeyboardButton(text=l10n.format_value("back-button-text"))
+    ]
+
+    return ReplyKeyboardMarkup(keyboard=[first_row, second_row], resize_keyboard=True)
+
+@cache
+def get_options_menu(l10n: FluentLocalization):
+    first_row = [
+        KeyboardButton(text=l10n.format_value("get-another-card-text"))
+    ]
+
+    second_row = [
+        KeyboardButton(text=l10n.format_value("enough-card-text"))
+    ]
+    return ReplyKeyboardMarkup(keyboard=[first_row, second_row], resize_keyboard=True)
