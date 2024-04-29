@@ -12,8 +12,6 @@ from casinobot.Cards_deck import Card, Deck
 from casinobot.Calculate_cards import calculate_score, get_card_text
 from casinobot.keyboards import get_options_menu, get_games_keyboard, get_return_card_menu
 
-
-#from Cards_deck
 from casinobot.Filters.filters import BlackJackTextFilter, BlackJackHitFilter, RepeatCardFilter, BackFilter, BlackJackStandFilter
 from casinobot.config_reader import Settings
 
@@ -181,7 +179,7 @@ def calculate_score(hand):
             ace_count += 1
             score += 11
         else:
-            score += int(card.rank)
+            score += float(card.rank)
 
     while score > 21 and ace_count > 0:
         score -= 10
