@@ -1,19 +1,41 @@
-# This is a sample Python script.
+import asyncio
+import logging
+from aiogram import Bot, Dispatcher, F
+from aiogram.fsm.storage.memory import MemoryStorage
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from config_reader import Settings
+from fluent_loader import get_fluent_localization
+from ui_commands import set_bot_commands
+from Middlewares.throttling import ThrottlingMiddleware
+from Handlers import userHandlers, spinHandler, blackJackHandler, raketkaHandler
 
+async def main():
+    logging.basicConfig(level=logging.INFO)
+    config = Settings()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    storage = MemoryStorage()
 
-def print_hi(nam):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Helo, {nam}')  # Press Ctrl+F8 to toggle the breakpoint.
+    bot = Bot(config.bot_token.get_secret_value(), parse_mode="HTML")
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    l10n = get_fluent_localization(config.bot_language)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    dp = Dispatcher(storage=storage, l10n=l10n, config=config)
+
+    dp.message.filter(F.chat.type == "private")
+
+    dp.include_router(userHandlers.router)
+    dp.include_router(spinHandler.router)
+    dp.include_router(blackJackHandler.router)
+    dp.include_router(raketkaHandler.router)
+
+    dp.message.middleware(ThrottlingMiddleware(config.throttle_time_spin, config.throttle_time_other))
+
+    await set_bot_commands(bot, l10n)
+
+    try:
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    finally:
+        await bot.session.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())
